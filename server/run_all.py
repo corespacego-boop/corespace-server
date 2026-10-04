@@ -4,6 +4,7 @@ import json
 import sys
 import getpass
 import os
+import httpx
 
 # Add paths so we can import from both academia and portal folders
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'academia')))
@@ -20,6 +21,30 @@ from portal.portal_timetable_service import PortalTimetableService
 from portal.portal_profile_service import PortalProfileService
 from portal.portal_marks_service import PortalMarksService
 from portal.portal_calendar_service import CalendarService
+
+async def check_academia_exists(email: str) -> bool:
+    """Checks whether the user email actually exists on Academia (Zoho Accounts)."""
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+            "Origin": "https://academia.srmist.edu.in",
+            "Referer": "https://academia.srmist.edu.in/"
+        }
+        async with httpx.AsyncClient(headers=headers, timeout=6.0) as client:
+            r = await client.get("https://academia.srmist.edu.in/accounts/p/10002227248/signin?hide_fp=true&orgtype=40&service_language=en&css_url=/49910842/academia-academic-services/downloadPortalCustomCss/login&dcc=true")
+            csrf = client.cookies.get("iamcsr")
+            if not csrf:
+                return False
+            url = f"https://academia.srmist.edu.in/accounts/p/40-10002227248/signin/v2/lookup/{email}"
+            res = await client.post(url, headers={"X-ZCSRF-TOKEN": f"iamcsrcoo={csrf}"})
+            data = res.json()
+            if data.get("status_code") == 400:
+                for err in data.get("errors", []):
+                    if err.get("code") in ["U401", "U410"] or "does not exist" in err.get("message", "").lower():
+                        return False
+            return True
+    except Exception:
+        return False
 
 async def login_academia(email, password):
     print("\n[+] Logging into Academia...")
@@ -78,16 +103,24 @@ async def main():
     if not portal_client:
         sys.exit(1)
 
-    # Infer academia email
-    email = f"{portal_id}@srmist.edu.in"
-    print(f"\nAcademia Email inferred as: {email}")
-    acad_pass = getpass.getpass("Academia Password (leave blank if none): ")
+    # Infer academia email and check availability
+    email = f"{portal_id}@srmist.edu.in" if "@" not in portal_id else portal_id
+    print(f"\n[+] Inferred Academia Email: {email}")
+    print("[+] Checking Academia availability...")
+    is_acad_available = await check_academia_exists(email)
 
     acad_client = None
-    if acad_pass.strip():
-        acad_client = await login_academia(email, acad_pass)
-        if not acad_client:
-            print("  -> Proceeding without Academia data...")
+    if not is_acad_available:
+        print(f"[-] Academia account not available for {email}. Auto-logging in with Portal...")
+    else:
+        print(f"[+] Academia account available for {email}!")
+        acad_pass = getpass.getpass("Academia Password: ")
+        if acad_pass.strip():
+            acad_client = await login_academia(email, acad_pass)
+            if not acad_client:
+                print("  -> Proceeding without Academia data...")
+        else:
+            print("  -> Skipping Academia data...")
 
     print("\n[+] Fetching data concurrently...")
     
