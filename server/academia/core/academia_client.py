@@ -1,9 +1,14 @@
 from urllib.parse import urljoin
 import re
 
-from core.config import BASE_URL, URLS
-from core.decoder import HTMLDecoder
-from core.session import SessionHandler
+try:
+    from server.academia.core.config import BASE_URL, URLS
+    from server.academia.core.decoder import HTMLDecoder
+    from server.academia.core.session import SessionHandler
+except ImportError:
+    from core.config import BASE_URL, URLS
+    from core.decoder import HTMLDecoder
+    from core.session import SessionHandler
 
 
 class AcademiaClient:

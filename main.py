@@ -26,15 +26,26 @@ for search_path in [
     if search_path not in sys.path:
         sys.path.insert(0, search_path)
 
-from portal_client import PortalSession, PortalClient
-from portal_attendance_service import PortalAttendanceService
-from portal_timetable_service import PortalTimetableService
-from portal_profile_service import PortalProfileService
+try:
+    from server.portal.portal_client import PortalSession, PortalClient
+    from server.portal.portal_attendance_service import PortalAttendanceService
+    from server.portal.portal_timetable_service import PortalTimetableService
+    from server.portal.portal_profile_service import PortalProfileService
 
-from academia_client import AcademiaClient
-from course_service import CourseService
-from timetable_service import TimetableService
-from profile_service import ProfileService
+    from server.academia.core.academia_client import AcademiaClient
+    from server.academia.services.course_service import CourseService
+    from server.academia.services.timetable_service import TimetableService
+    from server.academia.services.profile_service import ProfileService
+except ImportError:
+    from portal_client import PortalSession, PortalClient
+    from portal_attendance_service import PortalAttendanceService
+    from portal_timetable_service import PortalTimetableService
+    from portal_profile_service import PortalProfileService
+
+    from academia_client import AcademiaClient
+    from course_service import CourseService
+    from timetable_service import TimetableService
+    from profile_service import ProfileService
 
 app = FastAPI(
     title="Corespace Server",

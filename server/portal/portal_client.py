@@ -5,8 +5,10 @@ import re
 import time
 
 import httpx
-import asyncio
-from portal_marks_service import PortalMarksService
+try:
+    from server.portal.portal_marks_service import PortalMarksService
+except ImportError:
+    from portal_marks_service import PortalMarksService
 
 LOGIN_URL = "https://sp.srmist.edu.in/srmiststudentportal/students/loginManager/youLogin.jsp"
 BASE_URL = "https://sp.srmist.edu.in/srmiststudentportal"
