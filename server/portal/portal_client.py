@@ -4,6 +4,7 @@ import random
 import re
 import time
 
+import asyncio
 import httpx
 try:
     from server.portal.portal_marks_service import PortalMarksService
@@ -176,7 +177,7 @@ class PortalSession:
     def classify_failure(path, body):
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(body, "html.parser")
-        alert_el = soup.find(class_=lambda c: c and "alert-icon-content" in c) or soup.find(class_=lambda c: c and "alert-danger" in c)
+        alert_el = soup.select_one(".alert-icon-content, .alert-danger")
         
         if alert_el:
             alert_text = alert_el.get_text(separator=" ", strip=True)

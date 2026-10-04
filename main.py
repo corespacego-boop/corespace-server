@@ -311,7 +311,7 @@ async def fetch_all_data(req: FetchRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    raw_port = str(os.environ.get("PORT", "8000")).strip()
+    raw_port = os.environ.get("PORT", "8000").strip()
     try:
         port = int(raw_port)
     except (ValueError, TypeError):

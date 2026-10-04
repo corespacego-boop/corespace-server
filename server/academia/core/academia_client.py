@@ -1,3 +1,4 @@
+from typing import Optional
 from urllib.parse import urljoin
 import re
 
@@ -17,7 +18,7 @@ class AcademiaClient:
         self.password = password
         self.session_handler = SessionHandler(cookies)
 
-    async def authenticate(self, captcha: str = None, cdigest: str = None):
+    async def authenticate(self, captcha: Optional[str] = None, cdigest: Optional[str] = None):
         return await self.session_handler.login(self.username, self.password, captcha, cdigest)
 
     async def get_page(self, url_key, suffix=""):
