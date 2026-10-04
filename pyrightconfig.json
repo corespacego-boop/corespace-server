@@ -1,0 +1,7 @@
+{
+  "extraPaths": [
+    "server",
+    "server/portal",
+    "server/academia"
+  ]
+}

@@ -26,7 +26,6 @@ from portal.portal_client import PortalSession, PortalClient
 from portal.portal_attendance_service import PortalAttendanceService
 from portal.portal_timetable_service import PortalTimetableService
 from portal.portal_profile_service import PortalProfileService
-from portal.portal_marks_service import PortalMarksService
 
 from academia.core.academia_client import AcademiaClient
 from academia.services.course_service import CourseService
