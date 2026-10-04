@@ -103,7 +103,7 @@ class FetchRequest(BaseModel):
     portal_cookies: Optional[Dict[str, str]] = None
     academia_password: Optional[str] = None
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {
         "status": "healthy",
@@ -116,7 +116,10 @@ def root():
         }
     }
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
+@app.api_route("/healthz", methods=["GET", "HEAD"])
+@app.api_route("/api/health", methods=["GET", "HEAD"])
+@app.api_route("/ping", methods=["GET", "HEAD"])
 def health():
     return {"status": "healthy"}
 
@@ -317,4 +320,4 @@ if __name__ == "__main__":
     except (ValueError, TypeError):
         port = 8000
     print(f"[STARTUP] Starting Corespace server on 0.0.0.0:{port}...", flush=True)
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False, proxy_headers=True, forwarded_allow_ips="*")
