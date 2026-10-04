@@ -11,30 +11,34 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import httpx
 
-# Ensure server and sub-packages are in sys.path
+# Add server and all package subdirectories to Python path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SERVER_DIR = os.path.join(BASE_DIR, "server")
-if SERVER_DIR not in sys.path:
-    sys.path.insert(0, SERVER_DIR)
-if BASE_DIR not in sys.path:
-    sys.path.insert(0, BASE_DIR)
 
-sys.path.append(os.path.join(SERVER_DIR, "academia"))
-sys.path.append(os.path.join(SERVER_DIR, "portal"))
+for search_path in [
+    BASE_DIR,
+    SERVER_DIR,
+    os.path.join(SERVER_DIR, "portal"),
+    os.path.join(SERVER_DIR, "academia"),
+    os.path.join(SERVER_DIR, "academia", "core"),
+    os.path.join(SERVER_DIR, "academia", "services")
+]:
+    if search_path not in sys.path:
+        sys.path.insert(0, search_path)
 
-from portal.portal_client import PortalSession, PortalClient
-from portal.portal_attendance_service import PortalAttendanceService
-from portal.portal_timetable_service import PortalTimetableService
-from portal.portal_profile_service import PortalProfileService
+from portal_client import PortalSession, PortalClient
+from portal_attendance_service import PortalAttendanceService
+from portal_timetable_service import PortalTimetableService
+from portal_profile_service import PortalProfileService
 
-from academia.core.academia_client import AcademiaClient
-from academia.services.course_service import CourseService
-from academia.services.timetable_service import TimetableService
-from academia.services.profile_service import ProfileService
+from academia_client import AcademiaClient
+from course_service import CourseService
+from timetable_service import TimetableService
+from profile_service import ProfileService
 
 app = FastAPI(
-    title="Corespace Unified API",
-    description="Unified API server for SRMIST Student Portal and Academia",
+    title="Corespace Server",
+    description="Corespace Unified API for SRMIST Student Portal and Academia",
     version="1.0.0"
 )
 

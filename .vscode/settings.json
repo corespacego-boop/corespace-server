@@ -2,11 +2,15 @@
   "python.analysis.extraPaths": [
     "${workspaceFolder}/server",
     "${workspaceFolder}/server/portal",
-    "${workspaceFolder}/server/academia"
+    "${workspaceFolder}/server/academia",
+    "${workspaceFolder}/server/academia/core",
+    "${workspaceFolder}/server/academia/services"
   ],
   "python.autoComplete.extraPaths": [
     "${workspaceFolder}/server",
     "${workspaceFolder}/server/portal",
-    "${workspaceFolder}/server/academia"
+    "${workspaceFolder}/server/academia",
+    "${workspaceFolder}/server/academia/core",
+    "${workspaceFolder}/server/academia/services"
   ]
 }
