@@ -314,10 +314,10 @@ async def fetch_all_data(req: FetchRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    raw_port = os.environ.get("PORT", "8000").strip()
-    try:
-        port = int(raw_port)
-    except (ValueError, TypeError):
+    raw_port = os.environ.get("PORT")
+    if raw_port and raw_port.strip().isdigit():
+        port = int(raw_port.strip())
+    else:
         port = 8000
     print(f"[STARTUP] Starting Corespace server on 0.0.0.0:{port}...", flush=True)
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False, proxy_headers=True, forwarded_allow_ips="*")
