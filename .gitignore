@@ -1,0 +1,8 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+portal_captcha.png
+portal_timetable_debug.html
+portal_calendar_debug.html
+.DS_Store
