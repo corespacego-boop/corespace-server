@@ -31,10 +31,11 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-_shared_transport = httpx.AsyncHTTPTransport(
-    retries=1,
-    limits=httpx.Limits(max_keepalive_connections=50, max_connections=200)
-)
+def create_transport():
+    return httpx.AsyncHTTPTransport(
+        retries=1,
+        limits=httpx.Limits(max_keepalive_connections=50, max_connections=200)
+    )
 
 
 def canvas_hash():
@@ -72,7 +73,7 @@ def telemetry_payload():
 
 class PortalSession:
     def __init__(self):
-        self.client = httpx.AsyncClient(transport=_shared_transport, headers=HEADERS, follow_redirects=True, timeout=30.0)
+        self.client = httpx.AsyncClient(transport=create_transport(), headers=HEADERS, follow_redirects=True, timeout=30.0)
         self.nonce = None
         self.login_form_fields = {}
         self.captcha_page = None
@@ -238,7 +239,7 @@ class PortalSession:
 
 class PortalClient:
     def __init__(self, cookies=None):
-        self.client = httpx.AsyncClient(transport=_shared_transport, headers=HEADERS, follow_redirects=True, timeout=30.0)
+        self.client = httpx.AsyncClient(transport=create_transport(), headers=HEADERS, follow_redirects=True, timeout=30.0)
         if cookies:
             self.client.cookies.update(cookies)
 
